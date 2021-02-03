@@ -27,7 +27,6 @@ export default function SubmissionsTable() {
     db.collection('tracks').get().then((snapshot) => {
       let newTracks = [];
       snapshot.docs.forEach(doc => {
-        console.log(doc.id);
         newTracks.push({data: doc.data(), id: doc.id})
       })
       setTracks(newTracks)
@@ -47,7 +46,7 @@ export default function SubmissionsTable() {
       </TableHead>
       <TableBody>
         {tracks.map((track) => ( 
-          <TableRow key={track.id} onClick={() => history.push(`/${track.id}`)} className={classes.pointer}>
+          <TableRow key={track.id} onClick={() => history.push(`/admin/tracks/${track.id}`)} className={classes.pointer}>
             <TableCell component="th" scope="row">
               {track.data.artist}
             </TableCell>

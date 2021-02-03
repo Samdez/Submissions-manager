@@ -19,10 +19,10 @@ const Header = () => {
   return (
     <AppBar position="static">
       <Toolbar>
-          <Button onClick={() => history.push('/')}>
+          <Button onClick={() => history.push('/admin/tracks')}>
             <AlbumSharpIcon />
           </Button>
-          <Typography variant="h6" className={classes.nav} onClick={() => history.push('/')}>
+          <Typography variant="h6" className={classes.nav} onClick={() => history.push('/admin/tracks')}>
             Submissions
         </Typography>
           <Typography variant="h6" className={classes.nav}>

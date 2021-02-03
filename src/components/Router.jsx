@@ -16,8 +16,8 @@ const Router = () => {
           <>
             <Header />
             <Switch>
-              <Route exact path='/' component={SubmissionsTable} />
-              <Route path='/:id' component={TrackPage} />
+              <Route exact path='/admin/tracks' component={SubmissionsTable} />
+              <Route path='/admin/tracks/:id' component={TrackPage} />
             </Switch>
           </>
         }
