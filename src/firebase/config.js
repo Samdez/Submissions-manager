@@ -1,13 +1,14 @@
 import firebase from 'firebase/app';
 import 'firebase/firestore';
+require('dotenv').config();
 
 const firebaseConfig = {
-  apiKey: 'AIzaSyB2K6AWQsMpUMat36Advx0Qvu5BpC_7ImA',
-  authDomain: 'submissions-manager-e2a1d.firebaseapp.com',
-  projectId: 'submissions-manager-e2a1d',
-  storageBucket: 'submissions-manager-e2a1d.appspot.com',
-  messagingSenderId: '961921492466',
-  appId: '1:961921492466:web:d67be3c8c0021f728f376b',
+  apiKey: process.env.REACT_APP_API_KEY,
+  authDomain: process.env.REACT_APP_AUTH_DOMAIN,
+  projectId: process.env.REACT_APP_PROJECT_ID,
+  storageBucket: process.env.REACT_APP_STORAGE_BUCKET,
+  messagingSenderId: process.env.REACT_APP_MESSAGING_SENDER_ID,
+  appId: process.env.REACT_APP_APP_ID,
 };
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig);
