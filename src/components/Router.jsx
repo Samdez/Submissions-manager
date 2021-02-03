@@ -1,26 +1,28 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { BrowserRouter, Route, Switch } from "react-router-dom";
 import Header from "./Admin/Header";
 import SubmissionsTable from "./Admin/SubmissionsTable";
 import UploadForm from "./User/UploadForm";
 import TrackPage from './Admin/TrackPage';
-import { TracksContext } from "../context/TracksContext";
+import { AuthContext } from "../context/AuthContext";
+import Login from "./Admin/Login";
 
 const Router = () => {
-  const [isAdmin, setIsAdmin] = useState(true);
+  const Auth = useContext(AuthContext);
   return (
     <BrowserRouter>
-        {!isAdmin
-          ? <Route exact path='/' component={UploadForm} />
-          :
-          <>
-            <Header />
-            <Switch>
-              <Route exact path='/admin/tracks' component={SubmissionsTable} />
-              <Route path='/admin/tracks/:id' component={TrackPage} />
-            </Switch>
-          </>
-        }
+        <Route exact path='/' component={UploadForm} />
+      {!Auth.isLoggedIn
+        ? <Route path='/admin' component={Login} />
+        :
+        <>
+          <Header />
+          <Switch>
+            <Route exact path='/admin/tracks' component={SubmissionsTable} />
+            <Route path='/admin/tracks/:id' component={TrackPage} />
+          </Switch>
+        </>
+      }
     </BrowserRouter>
   );
 }

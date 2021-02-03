@@ -1,16 +1,17 @@
 import { CssBaseline } from '@material-ui/core';
 import React from 'react';
 import Router from './components/Router';
-import { TracksProvider } from './context/TracksContext';
+import { AuthProvider } from './context/AuthContext';
+
 
 
 function App() {
   return (
     <>
-      <TracksProvider>
+      <AuthProvider>
         <CssBaseline />
         <Router />
-      </TracksProvider>
+      </AuthProvider>
     </>
   );
 }

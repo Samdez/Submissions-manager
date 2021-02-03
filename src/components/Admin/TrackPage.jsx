@@ -7,12 +7,11 @@ import CardContent from '@material-ui/core/CardContent';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import { Box } from '@material-ui/core';
-import db from '../../firebase/config';
+import { db } from '../../firebase/config';
 import { useHistory, useParams } from 'react-router-dom';
 import ThumbUpIcon from '@material-ui/icons/ThumbUp';
 import ThumbDownIcon from '@material-ui/icons/ThumbDown';
 import firebase from 'firebase/app';
-import { TracksContext } from '../../context/TracksContext';
 
 const useStyles = makeStyles({
   root: {
@@ -33,16 +32,16 @@ export default function Trackpage() {
   const [track, setTrack] = useState({});
   const { id } = useParams();
   const history = useHistory();
-  
+
   useEffect(() => {
     db.collection('tracks')
       .where(firebase.firestore.FieldPath.documentId(), '==', id)
       .get()
       .then((querySnapshot) => {
-      querySnapshot.forEach(doc => {
-        setTrack(doc.data())
+        querySnapshot.forEach(doc => {
+          setTrack(doc.data())
+        })
       })
-    })
   }, []);
 
   const handleApprove = () => {
