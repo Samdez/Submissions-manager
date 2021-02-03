@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import {
   Box,
-  Button, FormControl, FormControlLabel, FormLabel, Input, InputLabel, Radio, RadioGroup,
+  Button, FormControl, FormControlLabel, Input, InputLabel, Radio, RadioGroup,
 } from '@material-ui/core';
 import db from '../firebase/config';
+import Toast from './Toast';
 
 const UploadForm = () => {
 
@@ -11,20 +12,28 @@ const UploadForm = () => {
   const [userEmail, setUserEmail] = useState('');
   const [type, setType] = useState('');
   const [artistName, setArtistName] = useState('');
+  const [open, setOpen] = useState(false);
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    db.collection('tracks')
+    try{
+      db.collection('tracks')
       .add({
         added: new Date(),
         artist: userEmail,
         link: trackLink,
         type: type
       })
+    }catch(err){
+      console.log(err);
+    }
 
     setUserEmail('');
     setTrackLink('');
+    setArtistName('');
+    setType('');
+    setOpen(true);
   }
 
   const handleRadioChange = (e) => {
@@ -78,6 +87,7 @@ const UploadForm = () => {
           </Box>
         </form>
       </Box>
+      <Toast open={open} setOpen={setOpen}/>
     </Box>
   )
 };
