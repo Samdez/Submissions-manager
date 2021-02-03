@@ -1,10 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
 import CardActionArea from '@material-ui/core/CardActionArea';
 import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
-import CardMedia from '@material-ui/core/CardMedia';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import { Box } from '@material-ui/core';
@@ -13,6 +12,7 @@ import { useHistory, useParams } from 'react-router-dom';
 import ThumbUpIcon from '@material-ui/icons/ThumbUp';
 import ThumbDownIcon from '@material-ui/icons/ThumbDown';
 import firebase from 'firebase/app';
+import { TracksContext } from '../../context/TracksContext';
 
 const useStyles = makeStyles({
   root: {
@@ -31,17 +31,21 @@ const useStyles = makeStyles({
 export default function Trackpage() {
   const classes = useStyles();
   const [track, setTrack] = useState({});
+  const { status, setStatus  } = useContext(TracksContext);
   const { id } = useParams();
   const history = useHistory();
 
   useEffect(() => {
-    console.log(id);
     db.collection('tracks').where(firebase.firestore.FieldPath.documentId(), '==', id).get().then((querySnapshot) => {
-     querySnapshot.forEach(doc => {
-       setTrack(doc.data())
-     })
+      querySnapshot.forEach(doc => {
+        setTrack(doc.data())
+      })
     })
   }, []);
+
+  const handleApprove = () => {
+    setStatus('approved');
+  }
 
   return (
     <Box
@@ -56,24 +60,24 @@ export default function Trackpage() {
           <CardContent>
             <Typography gutterBottom variant="h1" component="h1">
               {track.artist}
-          </Typography>
+            </Typography>
             <Typography variant="h3" color="textSecondary" component="h3">
               {track.link}
-          </Typography>
-          <Typography variant="h5" color="textSecondary" component="p">
+            </Typography>
+            <Typography variant="h5" color="textSecondary" component="p">
               {track.type}
-          </Typography>
+            </Typography>
           </CardContent>
         </CardActionArea>
         <CardActions
-        className={classes.buttons}
+          className={classes.buttons}
         >
-          <Button size="small" color="primary">
+          <Button size="small" color="primary" onClick={handleApprove}>
             <ThumbUpIcon />
-        </Button>
+          </Button>
           <Button size="small" color="primary">
             <ThumbDownIcon />
-        </Button>
+          </Button>
         </CardActions>
       </Card>
     </Box>

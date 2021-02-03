@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import Table from '@material-ui/core/Table';
@@ -9,6 +9,7 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import db from '../../firebase/config';
 import { useHistory } from 'react-router-dom';
+import { TracksContext } from '../../context/TracksContext';
 
 const useStyles = makeStyles({
   pointer: {
@@ -19,6 +20,7 @@ const useStyles = makeStyles({
 export default function SubmissionsTable() {
   const classes = useStyles();
   const [tracks, setTracks] = useState([]);
+  const {status, setStatus} = useContext(TracksContext); 
   const history = useHistory();
 
   useEffect(() => {
@@ -51,7 +53,7 @@ export default function SubmissionsTable() {
             </TableCell>
             <TableCell align="right">{track.data.link}</TableCell>
             <TableCell align="right">{track.data.type}</TableCell>
-            {/* <TableCell align="right">{row.carbs}</TableCell> */}
+            <TableCell align="right">{status}</TableCell>
             {/* <TableCell align="right">{row.protein}</TableCell> */}
           </TableRow>
         ))}
