@@ -3,7 +3,7 @@ import {
   Box,
   Button, FormControl, FormControlLabel, Input, InputLabel, Radio, RadioGroup,
 } from '@material-ui/core';
-import db from '../../firebase/config';
+import {db} from '../../firebase/config';
 import Toast from './Toast';
 
 const UploadForm = () => {
