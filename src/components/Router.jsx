@@ -1,20 +1,22 @@
 import { useState } from "react";
-import { BrowserRouter, Switch } from "react-router-dom";
+import { BrowserRouter, Route, Switch } from "react-router-dom";
 import Header from "./Admin/Header";
 import SubmissionsTable from "./Admin/SubmissionsTable";
 import UploadForm from "./User/UploadForm";
+import TrackPage from './Admin/TrackPage';
 
 const Router = () => {
   const [isAdmin, setIsAdmin] = useState(true);
   return (
     <BrowserRouter>
       {!isAdmin
-        ? <UploadForm />
+        ? <Route exact path='/' component={UploadForm}/>
         : 
         <>
         <Header />
         <Switch>
-          <SubmissionsTable />
+          <Route exact path='/' component={SubmissionsTable}/>
+          <Route path='/:id' component={TrackPage}/>
         </Switch>
         </>
   }
