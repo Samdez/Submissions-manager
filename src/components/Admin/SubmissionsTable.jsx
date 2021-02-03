@@ -53,7 +53,7 @@ export default function SubmissionsTable() {
             </TableCell>
             <TableCell align="right">{track.data.link}</TableCell>
             <TableCell align="right">{track.data.type}</TableCell>
-            <TableCell align="right">{status}</TableCell>
+            <TableCell align="right">{track.data.status}</TableCell>
             {/* <TableCell align="right">{row.protein}</TableCell> */}
           </TableRow>
         ))}

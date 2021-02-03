@@ -36,7 +36,10 @@ export default function Trackpage() {
   const history = useHistory();
 
   useEffect(() => {
-    db.collection('tracks').where(firebase.firestore.FieldPath.documentId(), '==', id).get().then((querySnapshot) => {
+    db.collection('tracks')
+      .where(firebase.firestore.FieldPath.documentId(), '==', id)
+      .get()
+      .then((querySnapshot) => {
       querySnapshot.forEach(doc => {
         setTrack(doc.data())
       })
@@ -44,7 +47,17 @@ export default function Trackpage() {
   }, []);
 
   const handleApprove = () => {
-    setStatus('approved');
+    const docRef = db.collection('tracks').doc(id);
+    docRef.update({
+      status: 'approved'
+    })
+  }
+
+  const handleRefuse = () => {
+    const docRef = db.collection('tracks').doc(id);
+    docRef.update({
+      status: 'declined'
+    })
   }
 
   return (
@@ -75,7 +88,7 @@ export default function Trackpage() {
           <Button size="small" color="primary" onClick={handleApprove}>
             <ThumbUpIcon />
           </Button>
-          <Button size="small" color="primary">
+          <Button size="small" color="primary" onClick={handleRefuse}>
             <ThumbDownIcon />
           </Button>
         </CardActions>
