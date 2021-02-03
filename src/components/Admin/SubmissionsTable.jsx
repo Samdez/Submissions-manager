@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import Table from '@material-ui/core/Table';
@@ -8,6 +8,7 @@ import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TablePagination from '@material-ui/core/TablePagination';
 import TableRow from '@material-ui/core/TableRow';
+import db from '../../firebase/config';
 
 const columns = [
   { id: 'artist', label: 'Artist', minWidth: 170 },
@@ -41,7 +42,18 @@ export default function SubmissionsTable() {
   const classes = useStyles();
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
+  const [tracks, setTracks] = useState([]);
 
+  useEffect(() => {
+    db.collection('tracks').get().then((snapshot) => {
+      let newTracks = [];
+      snapshot.docs.forEach(doc => {
+        newTracks.push(doc.data())
+      })
+      setTracks(newTracks)
+    })
+  }, [db]);
+console.log(tracks);
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
@@ -52,49 +64,30 @@ export default function SubmissionsTable() {
   };
 
   return (
-    <Paper className={classes.root}>
-      <TableContainer className={classes.container}>
-        <Table stickyHeader aria-label="sticky table">
-          <TableHead>
-            <TableRow>
-              {columns.map((column) => (
-                <TableCell
-                  key={column.id}
-                  align={column.align}
-                  style={{ minWidth: column.minWidth }}
-                >
-                  {column.label}
-                </TableCell>
-              ))}
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {.map((row) => {
-              return (
-                <TableRow hover role="checkbox" tabIndex={-1} key={row.code}>
-                  {columns.map((column) => {
-                    const value = row[column.id];
-                    return (
-                      <TableCell key={column.id} align={column.align}>
-                        {column.format && typeof value === 'number' ? column.format(value) : value}
-                      </TableCell>
-                    );
-                  })}
-                </TableRow>
-              );
-            })}
-          </TableBody>
-        </Table>
-      </TableContainer>
-      <TablePagination
-        rowsPerPageOptions={[10, 25, 100]}
-        component="div"
-        count={rows.length}
-        rowsPerPage={rowsPerPage}
-        page={page}
-        onChangePage={handleChangePage}
-        onChangeRowsPerPage={handleChangeRowsPerPage}
-      />
-    </Paper>
+    <TableContainer component={Paper}>
+    <Table className={classes.table} aria-label="simple table">
+      <TableHead>
+        <TableRow>
+          <TableCell>Artist</TableCell>
+          <TableCell align="right">Link</TableCell>
+          <TableCell align="right">Type</TableCell>
+          <TableCell align="right">Status</TableCell>
+        </TableRow>
+      </TableHead>
+      <TableBody>
+        {tracks.map((track) => (
+          <TableRow key={track.added?.seconds}>
+            <TableCell component="th" scope="row">
+              {track.artist}
+            </TableCell>
+            <TableCell align="right">{track.link}</TableCell>
+            <TableCell align="right">{track.type}</TableCell>
+            {/* <TableCell align="right">{row.carbs}</TableCell> */}
+            {/* <TableCell align="right">{row.protein}</TableCell> */}
+          </TableRow>
+        ))}
+      </TableBody>
+    </Table>
+  </TableContainer>
   );
 }

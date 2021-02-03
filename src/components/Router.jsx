@@ -14,7 +14,7 @@ const Router = () => {
         <>
         <Header />
         <Switch>
-          {/* <SubmissionsTable /> */}
+          <SubmissionsTable />
         </Switch>
         </>
   }
