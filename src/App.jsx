@@ -1,11 +1,13 @@
+import { CssBaseline } from '@material-ui/core';
 import React from 'react';
-import UploadForm from './components/UploadForm';
+import Router from './components/Router';
+
 
 function App() {
   return (
     <>
-      <div className="App" />
-      <UploadForm />
+      <CssBaseline />
+      <Router />
     </>
   );
 }

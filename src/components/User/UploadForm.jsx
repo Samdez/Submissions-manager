@@ -3,7 +3,7 @@ import {
   Box,
   Button, FormControl, FormControlLabel, Input, InputLabel, Radio, RadioGroup,
 } from '@material-ui/core';
-import db from '../firebase/config';
+import db from '../../firebase/config';
 import Toast from './Toast';
 
 const UploadForm = () => {
@@ -17,15 +17,15 @@ const UploadForm = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    try{
+    try {
       db.collection('tracks')
-      .add({
-        added: new Date(),
-        artist: userEmail,
-        link: trackLink,
-        type: type
-      })
-    }catch(err){
+        .add({
+          added: new Date(),
+          artist: userEmail,
+          link: trackLink,
+          type: type
+        })
+    } catch (err) {
       console.log(err);
     }
 
@@ -55,8 +55,9 @@ const UploadForm = () => {
         justifyContent="center"
         alignItems="center"
       >
+        <h1>Lofirebase sumissions </h1>
         <form onSubmit={handleSubmit}>
-        <FormControl fullWidth margin="normal">
+          <FormControl fullWidth margin="normal">
             <InputLabel htmlFor="my-input">Artist name</InputLabel>
             <Input id="my-input" aria-describedby="my-helper-text" onChange={(e) => setArtistName(e.target.value)} value={artistName} />
           </FormControl>
@@ -87,7 +88,7 @@ const UploadForm = () => {
           </Box>
         </form>
       </Box>
-      <Toast open={open} setOpen={setOpen}/>
+      <Toast open={open} setOpen={setOpen} />
     </Box>
   )
 };
