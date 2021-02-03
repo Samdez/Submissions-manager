@@ -31,10 +31,9 @@ const useStyles = makeStyles({
 export default function Trackpage() {
   const classes = useStyles();
   const [track, setTrack] = useState({});
-  const { status, setStatus  } = useContext(TracksContext);
   const { id } = useParams();
   const history = useHistory();
-
+  
   useEffect(() => {
     db.collection('tracks')
       .where(firebase.firestore.FieldPath.documentId(), '==', id)
