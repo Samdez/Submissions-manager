@@ -29,7 +29,7 @@ export default function SubmissionsTable() {
   const history = useHistory();
 
   useEffect(() => {
-    db.collection('tracks').get().then((snapshot) => {
+    db.collection('tracks').orderBy('added', 'desc').get().then((snapshot) => {
       let newTracks = [];
       snapshot.docs.forEach(doc => {
         newTracks.push({ data: doc.data(), id: doc.id })
@@ -81,7 +81,6 @@ export default function SubmissionsTable() {
         <TableHead>
           <TableRow>
             <TableCell>Artist</TableCell>
-            <TableCell align="right">Link</TableCell>
             <TableCell align="right">Type</TableCell>
             <TableCell align="right">Status</TableCell>
           </TableRow>
@@ -92,7 +91,6 @@ export default function SubmissionsTable() {
               <TableCell component="th" scope="row">
                 {track.data.artist}
               </TableCell>
-              <TableCell align="right">{track.data.link}</TableCell>
               <TableCell align="right">{track.data.type}</TableCell>
               <TableCell align="right">{track.data.status}</TableCell>
             </TableRow>
