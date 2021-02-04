@@ -6,7 +6,7 @@ import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
-import { Box } from '@material-ui/core';
+import { Box, CardMedia } from '@material-ui/core';
 import { db, auth } from '../../firebase/config';
 import { useParams } from 'react-router-dom';
 import ThumbUpIcon from '@material-ui/icons/ThumbUp';
@@ -20,10 +20,6 @@ const useStyles = makeStyles({
   root: {
     maxWidth: '80%',
   },
-  box: {
-    height: '100vh',
-    width: '100%'
-  },
   buttons: {
     display: 'flex',
     justifyContent: 'space-around'
@@ -31,6 +27,11 @@ const useStyles = makeStyles({
   link: {
     textDecoration: 'none',
     color: "inherit"
+  },
+  media: {
+    height: '30vh',
+    // width: '30vw',
+    objectFit: 'contain'
   }
 });
 
@@ -55,7 +56,7 @@ export default function Trackpage() {
   }, []);
 
   useEffect(() => {
-    db.collectionGroup('votes').where('trackId', '==', id)
+    db.collectionGroup('votes').where('trackId', '==', id).where('user', '==', userId)
       .get()
       .then(querySnapshot => {
         querySnapshot.forEach(doc => {
@@ -76,8 +77,8 @@ export default function Trackpage() {
   }
 
   useEffect(() => {
-    console.log(vote);
-  }, [vote])
+    console.log(track);
+  }, [track])
 
   const handleRefuse = () => {
     const docRef = db.collection('tracks').doc(id);
@@ -98,10 +99,18 @@ export default function Trackpage() {
         display="flex"
         justifyContent="center"
         alignItems='center'
+        marginTop='5vh'
       >
         <Card className={classes.root}>
           <CardActionArea>
             <a href={track.link} target="_blank" rel='noreferrer' className={classes.link}>
+              {track.imageUrl &&
+                <CardMedia
+                  className={classes.media}
+                  image={track.imageUrl}
+                  title="artwork"
+                />
+              }
               <CardContent>
                 <Typography gutterBottom variant="h3" component="h3">
                   {track.artist}
