@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
 import CardActionArea from '@material-ui/core/CardActionArea';
@@ -7,12 +7,14 @@ import CardContent from '@material-ui/core/CardContent';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import { Box } from '@material-ui/core';
-import db from '../../firebase/config';
-import { useHistory, useParams } from 'react-router-dom';
+import { db, auth } from '../../firebase/config';
+import { useParams } from 'react-router-dom';
 import ThumbUpIcon from '@material-ui/icons/ThumbUp';
 import ThumbDownIcon from '@material-ui/icons/ThumbDown';
+import CheckCircleIcon from '@material-ui/icons/CheckCircle';
 import firebase from 'firebase/app';
-import { TracksContext } from '../../context/TracksContext';
+import Comments from './Comments';
+import Toast from '../User/Toast';
 
 const useStyles = makeStyles({
   root: {
@@ -25,74 +27,110 @@ const useStyles = makeStyles({
   buttons: {
     display: 'flex',
     justifyContent: 'space-around'
+  },
+  link: {
+    textDecoration: 'none',
+    color: "inherit"
   }
 });
 
 export default function Trackpage() {
   const classes = useStyles();
   const [track, setTrack] = useState({});
-  const { status, setStatus  } = useContext(TracksContext);
   const { id } = useParams();
-  const history = useHistory();
+  const [open, setOpen] = useState(false);
+  const [status, setStatus] = useState('');
+  const [vote, setVote] = useState([]);
+  const userId = auth.currentUser.uid;
 
   useEffect(() => {
     db.collection('tracks')
       .where(firebase.firestore.FieldPath.documentId(), '==', id)
       .get()
       .then((querySnapshot) => {
-      querySnapshot.forEach(doc => {
-        setTrack(doc.data())
+        querySnapshot.forEach(doc => {
+          setTrack(doc.data())
+        })
       })
-    })
   }, []);
+
+  useEffect(() => {
+    db.collectionGroup('votes').where('trackId', '==', id)
+      .get()
+      .then(querySnapshot => {
+        querySnapshot.forEach(doc => {
+          setVote(doc.data())
+        })
+      })
+  }, [status])
 
   const handleApprove = () => {
     const docRef = db.collection('tracks').doc(id);
-    docRef.update({
-      status: 'approved'
+    docRef.collection('votes').doc(userId).set({
+      status: 'approved',
+      user: userId,
+      trackId: id
     })
+    setStatus('approved')
+    setOpen(true)
   }
+
+  useEffect(() => {
+    console.log(vote);
+  }, [vote])
 
   const handleRefuse = () => {
     const docRef = db.collection('tracks').doc(id);
-    docRef.update({
-      status: 'declined'
+    docRef.collection('votes').doc(userId).set({
+      status: 'declined',
+      user: userId,
+      trackId: id
     })
+    setStatus('declined')
+    setOpen(true)
   }
 
   return (
-    <Box
-      height="100vh"
-      width="100vw"
-      display="flex"
-      justifyContent="center"
-      alignItems='center'
-    >
-      <Card className={classes.root} onClick={() => history.push(track.link)}>
-        <CardActionArea>
-          <CardContent>
-            <Typography gutterBottom variant="h1" component="h1">
-              {track.artist}
-            </Typography>
-            <Typography variant="h3" color="textSecondary" component="h3">
-              {track.link}
-            </Typography>
-            <Typography variant="h5" color="textSecondary" component="p">
-              {track.type}
-            </Typography>
-          </CardContent>
-        </CardActionArea>
-        <CardActions
-          className={classes.buttons}
-        >
-          <Button size="small" color="primary" onClick={handleApprove}>
-            <ThumbUpIcon />
-          </Button>
-          <Button size="small" color="primary" onClick={handleRefuse}>
-            <ThumbDownIcon />
-          </Button>
-        </CardActions>
-      </Card>
-    </Box>
+    <>
+      <Box
+        height="50vh"
+        width="100vw"
+        display="flex"
+        justifyContent="center"
+        alignItems='center'
+      >
+        <Card className={classes.root}>
+          <CardActionArea>
+            <a href={track.link} target="_blank" rel='noreferrer' className={classes.link}>
+              <CardContent>
+                <Typography gutterBottom variant="h3" component="h3">
+                  {track.artist}
+                </Typography>
+                <Typography variant="h3" color="textSecondary" component="h3">
+                  {track.link}
+                </Typography>
+                <Typography variant="h5" color="textSecondary" component="p">
+                  {track.type}
+                </Typography>
+              </CardContent>
+            </a>
+          </CardActionArea>
+          <CardActions
+            className={classes.buttons}
+          >
+            <Button size="small" color='primary' onClick={handleApprove}>
+              <ThumbUpIcon />
+              {vote.status === 'approved' && <CheckCircleIcon />}
+            </Button>
+            <Button size="small" color='primary' onClick={handleRefuse}>
+              <ThumbDownIcon />
+              {vote.status === 'declined' && <CheckCircleIcon />}
+            </Button>
+          </CardActions>
+        </Card>
+      </Box>
+      <Comments id={id} />
+      <Toast open={open} setOpen={setOpen} status={status} />
+    </>
   );
 }
