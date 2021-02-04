@@ -29,7 +29,7 @@ export default function SubmissionsTable() {
   const history = useHistory();
 
   useEffect(() => {
-    db.collection('tracks').orderBy('added', 'desc').get().then((snapshot) => {
+   db.collection('tracks').orderBy('added', 'desc').get().then((snapshot) => {
       let newTracks = [];
       snapshot.docs.forEach(doc => {
         newTracks.push({ data: doc.data(), id: doc.id })

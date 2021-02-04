@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
 import CardActionArea from '@material-ui/core/CardActionArea';
@@ -8,11 +8,12 @@ import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import { Box } from '@material-ui/core';
 import { db } from '../../firebase/config';
-import { useHistory, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import ThumbUpIcon from '@material-ui/icons/ThumbUp';
 import ThumbDownIcon from '@material-ui/icons/ThumbDown';
 import firebase from 'firebase/app';
 import Comments from './Comments';
+import Toast from '../User/Toast';
 
 const useStyles = makeStyles({
   root: {
@@ -36,7 +37,8 @@ export default function Trackpage() {
   const classes = useStyles();
   const [track, setTrack] = useState({});
   const { id } = useParams();
-  const history = useHistory();
+  const [open, setOpen] = useState(false);
+  const [status, setStatus] = useState('');
 
   useEffect(() => {
     db.collection('tracks')
@@ -54,6 +56,8 @@ export default function Trackpage() {
     docRef.update({
       status: 'approved'
     })
+    setStatus('approved')
+    setOpen(true)
   }
 
   const handleRefuse = () => {
@@ -61,6 +65,8 @@ export default function Trackpage() {
     docRef.update({
       status: 'declined'
     })
+    setStatus('declined')
+    setOpen(true)
   }
 
   return (
@@ -101,6 +107,7 @@ export default function Trackpage() {
         </Card>
       </Box>
       <Comments id={id} />
+      <Toast open={open} setOpen={setOpen} status={status}/>
     </>
   );
 }

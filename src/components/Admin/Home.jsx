@@ -15,7 +15,7 @@ const Home = () => {
       })
       setTracks(newTracks)
     });
-  }, [db]);
+  }, []);
 
   useEffect(() => {
     console.log(tracks);
@@ -24,6 +24,8 @@ const Home = () => {
     })
     return () => setPending(0) 
   }, [tracks])
+
+
   return (
     <Box
       height="100vh"

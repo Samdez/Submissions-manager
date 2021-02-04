@@ -27,7 +27,7 @@ const Comments = ({ id }) => {
     });
 
     return () => unsubscribe() 
-  })
+  }, [])
 
 
   const handleSubmit = (e) => {
