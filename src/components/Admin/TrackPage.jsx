@@ -24,6 +24,10 @@ const useStyles = makeStyles({
   buttons: {
     display: 'flex',
     justifyContent: 'space-around'
+  },
+  link: {
+    textDecoration: 'none',
+    color: "inherit"
   }
 });
 
@@ -66,8 +70,9 @@ export default function Trackpage() {
       justifyContent="center"
       alignItems='center'
     >
-      <Card className={classes.root} onClick={() => history.push(track.link)}>
+      <Card className={classes.root}>
         <CardActionArea>
+          <a href={track.link} target="_blank" rel='noreferrer' className={classes.link}>
           <CardContent>
             <Typography gutterBottom variant="h1" component="h1">
               {track.artist}
@@ -79,6 +84,7 @@ export default function Trackpage() {
               {track.type}
             </Typography>
           </CardContent>
+        </a>
         </CardActionArea>
         <CardActions
           className={classes.buttons}

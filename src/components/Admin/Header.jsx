@@ -25,7 +25,10 @@ const Header = () => {
           <Button onClick={() => history.push('/admin/tracks')}>
             <AlbumSharpIcon />
           </Button>
-          <Button onClick={() => Auth.setIsLoggedIn(false)}>
+          <Button onClick={() => {
+            Auth.setIsLoggedIn(false)
+            history.push('/admin')
+            }}>
             Log out
           </Button>
           <Typography variant="h6" className={classes.nav} onClick={() => history.push('/admin/tracks')}>
