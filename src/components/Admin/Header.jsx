@@ -22,7 +22,7 @@ const Header = () => {
   return (
     <AppBar position="static">
       <Toolbar>
-          <Button onClick={() => history.push('/admin/tracks')}>
+          <Button onClick={() => history.push('/admin')}>
             <AlbumSharpIcon />
           </Button>
           <Button onClick={() => {
