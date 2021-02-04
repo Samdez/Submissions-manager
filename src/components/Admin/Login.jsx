@@ -25,7 +25,7 @@ const Login = () => {
     auth
       .signInWithEmailAndPassword(userEmail, userPassword)
       .then(res => {
-        Auth.setIsLoggedIn(true)
+        Auth.setIsLoggedIn(true);
       })
       .catch(error => {
         console.error("Error signing in with password and email", error);

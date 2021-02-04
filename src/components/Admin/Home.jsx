@@ -18,7 +18,6 @@ const Home = () => {
   }, []);
 
   useEffect(() => {
-    console.log(tracks);
     tracks.forEach(track => {
       !track.data.status && setPending(pending => pending + 1)
     })
