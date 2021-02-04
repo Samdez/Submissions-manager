@@ -1,13 +1,14 @@
 import { db } from '../../firebase/config';
 import { auth } from "../../firebase/config";
 import { Box, Button, makeStyles, Paper, TextField } from "@material-ui/core";
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 const useStyles = makeStyles(() => ({
   flex: {
     display: 'flex',
     flexDirection: 'column',
-    alignItems: "center"
+    alignItems: "center",
+    width: '50%'
   },
   userComment: {
     width: '30%',
@@ -20,6 +21,9 @@ const useStyles = makeStyles(() => ({
     marginBottom: '1em',
     backgroundColor: '#ff6090',
     alignSelf: 'flex-start'
+  },
+  inputText: {
+    width: '100%'
   }
 }));
 
@@ -28,6 +32,7 @@ const Comments = ({ id }) => {
   const [comment, setComment] = useState('');
   const [commentsList, setCommentsList] = useState([]);
   const userId = auth.currentUser.uid;
+  const scrollRef = useRef(null);
 
   useEffect(() => {
     const unsubscribe = db.collection('comments').orderBy('added').onSnapshot(snap => {
@@ -38,6 +43,11 @@ const Comments = ({ id }) => {
     return () => unsubscribe()
   }, [])
 
+  useEffect(() => {
+    if (scrollRef.current) {
+      scrollRef.current.scrollIntoView({ behaviour: "smooth" });
+    }
+  }, [commentsList]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -61,15 +71,18 @@ const Comments = ({ id }) => {
       flexDirection='column'
       justifyContent='center'
       alignItems='center'
-    >
+      >
+      <h1>Comments</h1>
       <Box
         display="flex"
         flexDirection='column'
         justifyContent="center"
         alignItems='center'
         width='50%'
+        maxHeight='30vh'
+        overflow='auto'
+        padding="5px"
       >
-        <h1>Comments</h1>
         {
           commentsList
             .filter(comment => comment.trackId === id)
@@ -79,7 +92,7 @@ const Comments = ({ id }) => {
                 <Paper
                   elevation={2}
                   className={classes.userComment}
-                  backg
+                  ref={scrollRef}
                 >{comment.content}
                 </Paper>
                 :
@@ -91,11 +104,13 @@ const Comments = ({ id }) => {
                 </Paper>
             })
         }
+          </Box>
         <form onSubmit={handleSubmit} className={classes.flex}>
           <TextField
             id="outlined-multiline-static"
             label="Comment"
             multiline
+            className={classes.inputText}
             rows={4}
             placeholder="leave a comment"
             variant="outlined"
@@ -104,7 +119,6 @@ const Comments = ({ id }) => {
           />
           <Button type='submit'>Post</Button>
         </form>
-      </Box>
     </Box>
   );
 }
