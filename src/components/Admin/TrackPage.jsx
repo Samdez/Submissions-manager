@@ -55,7 +55,7 @@ export default function Trackpage() {
   }, []);
 
   useEffect(() => {
-    db.collectionGroup('votes').where('trackId', '==', id)
+    db.collectionGroup('votes').where('trackId', '==', id).where('user', '==', userId)
       .get()
       .then(querySnapshot => {
         querySnapshot.forEach(doc => {
@@ -76,7 +76,7 @@ export default function Trackpage() {
   }
 
   useEffect(() => {
-    console.log(vote);
+    console.log(vote, userId);
   }, [vote])
 
   const handleRefuse = () => {
