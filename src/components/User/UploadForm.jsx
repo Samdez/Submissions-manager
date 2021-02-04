@@ -75,12 +75,10 @@ const UploadForm = () => {
             justifyContent="center"
             alignItems="center">
 
-            <FormControl component="fieldset">
-              <RadioGroup aria-label="gender" name="gender1" onChange={handleRadioChange} row required>
-                <FormControlLabel value="release" control={<Radio />} label="Release" />
-                <FormControlLabel value="playlist" control={<Radio />} label="Playlist" />
-              </RadioGroup>
-            </FormControl>
+            <RadioGroup row onChange={(e) => setType(e.target.value)}>
+                <FormControlLabel value="release" control={<Radio />} label="Release" control={<Radio required={true} />} />
+                <FormControlLabel value="playlist" control={<Radio />} label="Playlist" control={<Radio required={true}/>} />
+            </RadioGroup>
 
             <Button variant="contained" color="primary" type="submit">
               Submit
