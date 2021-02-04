@@ -1,28 +1,47 @@
 import { Box } from "@material-ui/core";
 import { useEffect, useState } from "react";
-import { db } from "../../firebase/config";
+import { db, auth } from "../../firebase/config";
 
 const Home = () => {
 
   const [ tracks, setTracks] = useState([]);
   const [ pending, setPending] = useState(0);
+  const [votes, setVotes] = useState([]);
+  const [userVotes, setUserVotes] = useState(0);
+  const userId = auth.currentUser.uid;
+
 
   useEffect(() => {
-    db.collection('tracks').get().then((snapshot) => {
+    db.collection('tracks').orderBy('added', 'desc').get().then((snapshot) => {
       let newTracks = [];
       snapshot.docs.forEach(doc => {
         newTracks.push({ data: doc.data(), id: doc.id })
       })
       setTracks(newTracks)
-    });
+    })
+
+    db.collectionGroup('votes')
+    .get()
+    .then(snapshot => {
+      let newVotes = [];
+      snapshot.docs.forEach(doc => {
+        newVotes.push(doc.data())
+      })
+      setVotes(newVotes)
+      })
   }, []);
 
   useEffect(() => {
-    tracks.forEach(track => {
-      !track.data.status && setPending(pending => pending + 1)
+    const tracksVoted = []
+    votes.forEach(vote => {
+      if(vote.user === userId){
+        tracksVoted.push(vote)
+      }
     })
-    return () => setPending(0) 
-  }, [tracks])
+    console.log(tracks,tracksVoted, userVotes);
+    setPending(tracks.length - tracksVoted.length)
+  }, [votes])
+
 
 
   return (
