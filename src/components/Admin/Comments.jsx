@@ -3,7 +3,7 @@ import { db } from '../../firebase/config';
 import { Box, Button, makeStyles, Paper, TextField } from "@material-ui/core";
 import { useEffect, useState } from 'react';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
   flex: {
     display: 'flex',
     flexDirection: 'column',
@@ -21,15 +21,14 @@ const Comments = ({ id }) => {
   const [commentsList, setCommentsList] = useState([]);
 
   useEffect(() => {
-    db.collection('comments').get().then((snapshot) => {
-      let newComments = [];
-      snapshot.docs.forEach(doc => {
-        newComments
-        .push({ data: doc.data(), id: doc.id })
-      })
-      setCommentsList(newComments)
-    })
-  }, [db])
+    const unsubscribe = db.collection('comments').orderBy('added').onSnapshot(snap => {
+      const data = snap.docs.map(doc => doc.data())
+      setCommentsList(data)
+    });
+
+    return () => unsubscribe() 
+  })
+
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -46,10 +45,6 @@ const Comments = ({ id }) => {
     setComment('');
   }
 
-  useEffect(() => {
-    console.log(commentsList);
-  }, [commentsList])
-
   return (
     <Box
       display="flex"
@@ -60,12 +55,12 @@ const Comments = ({ id }) => {
       <h1>Comments</h1>
     {
       commentsList
-        .filter(comment => comment.data.trackId === id)
+        .filter(comment => comment.trackId === id)
         .map(comment => {
         return <Paper 
         elevation={2}
         className={classes.comment}
-        >{comment.data.content}
+        >{comment.content}
         </Paper>
       })
     }
