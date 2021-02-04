@@ -33,7 +33,7 @@ export default function SubmissionsTable() {
       })
       setTracks(newTracks)
     })
-  }, [db]);
+  }, []);
 
   return (
     <Box display='flex' justifyContent='center' mt={5}>

@@ -12,6 +12,7 @@ import { useHistory, useParams } from 'react-router-dom';
 import ThumbUpIcon from '@material-ui/icons/ThumbUp';
 import ThumbDownIcon from '@material-ui/icons/ThumbDown';
 import firebase from 'firebase/app';
+import Comments from './Comments';
 
 const useStyles = makeStyles({
   root: {
@@ -63,40 +64,43 @@ export default function Trackpage() {
   }
 
   return (
-    <Box
-      height="100vh"
-      width="100vw"
-      display="flex"
-      justifyContent="center"
-      alignItems='center'
-    >
-      <Card className={classes.root}>
-        <CardActionArea>
-          <a href={track.link} target="_blank" rel='noreferrer' className={classes.link}>
-          <CardContent>
-            <Typography gutterBottom variant="h1" component="h1">
-              {track.artist}
-            </Typography>
-            <Typography variant="h3" color="textSecondary" component="h3">
-              {track.link}
-            </Typography>
-            <Typography variant="h5" color="textSecondary" component="p">
-              {track.type}
-            </Typography>
-          </CardContent>
-        </a>
-        </CardActionArea>
-        <CardActions
-          className={classes.buttons}
-        >
-          <Button size="small" color="primary" onClick={handleApprove}>
-            <ThumbUpIcon />
-          </Button>
-          <Button size="small" color="primary" onClick={handleRefuse}>
-            <ThumbDownIcon />
-          </Button>
-        </CardActions>
-      </Card>
-    </Box>
+    <>
+      <Box
+        height="50vh"
+        width="100vw"
+        display="flex"
+        justifyContent="center"
+        alignItems='center'
+      >
+        <Card className={classes.root}>
+          <CardActionArea>
+            <a href={track.link} target="_blank" rel='noreferrer' className={classes.link}>
+              <CardContent>
+                <Typography gutterBottom variant="h1" component="h1">
+                  {track.artist}
+                </Typography>
+                <Typography variant="h3" color="textSecondary" component="h3">
+                  {track.link}
+                </Typography>
+                <Typography variant="h5" color="textSecondary" component="p">
+                  {track.type}
+                </Typography>
+              </CardContent>
+            </a>
+          </CardActionArea>
+          <CardActions
+            className={classes.buttons}
+          >
+            <Button size="small" color="primary" onClick={handleApprove}>
+              <ThumbUpIcon />
+            </Button>
+            <Button size="small" color="primary" onClick={handleRefuse}>
+              <ThumbDownIcon />
+            </Button>
+          </CardActions>
+        </Card>
+      </Box>
+      <Comments id={id} />
+    </>
   );
 }
