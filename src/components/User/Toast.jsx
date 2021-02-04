@@ -19,16 +19,13 @@ const Toast = ({ open, setOpen, status }) => {
 
   useEffect(() => {
     if(status === 'approved'){
-      console.log('ok');
       setMessage('You approved this track')
     }
     if(status === 'declined'){
-      console.log('not ok');
 
       setMessage('You declined this track')
     }
     else if(!status){
-      console.log('not not ok');
       setMessage('Thank you for your submission!')
     }
   }, [status])

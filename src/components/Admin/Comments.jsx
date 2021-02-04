@@ -1,5 +1,5 @@
 import { db } from '../../firebase/config';
-
+import { auth } from "../../firebase/config";
 import { Box, Button, makeStyles, Paper, TextField } from "@material-ui/core";
 import { useEffect, useState } from 'react';
 
@@ -9,9 +9,17 @@ const useStyles = makeStyles(() => ({
     flexDirection: 'column',
     alignItems: "center"
   },
-  comment: {
+  userComment: {
     width: '30%',
-    marginBottom: '1em'
+    marginBottom: '1em',
+    backgroundColor: '#80e27e',
+    alignSelf: 'flex-end'
+  },
+  otherUserComment: {
+    width: '30%',
+    marginBottom: '1em',
+    backgroundColor: '#ff6090',
+    alignSelf: 'flex-start'
   }
 }));
 
@@ -19,6 +27,7 @@ const Comments = ({ id }) => {
   const classes = useStyles();
   const [comment, setComment] = useState('');
   const [commentsList, setCommentsList] = useState([]);
+  const userId = auth.currentUser.uid;
 
   useEffect(() => {
     const unsubscribe = db.collection('comments').orderBy('added').onSnapshot(snap => {
@@ -26,7 +35,7 @@ const Comments = ({ id }) => {
       setCommentsList(data)
     });
 
-    return () => unsubscribe() 
+    return () => unsubscribe()
   }, [])
 
 
@@ -37,7 +46,8 @@ const Comments = ({ id }) => {
         .add({
           added: new Date(),
           trackId: id,
-          content: comment
+          content: comment,
+          author: userId
         })
     } catch (err) {
       console.log(err);
@@ -49,34 +59,52 @@ const Comments = ({ id }) => {
     <Box
       display="flex"
       flexDirection='column'
-      justifyContent="center"
+      justifyContent='center'
       alignItems='center'
     >
-      <h1>Comments</h1>
-    {
-      commentsList
-        .filter(comment => comment.trackId === id)
-        .map(comment => {
-        return <Paper 
-        elevation={2}
-        className={classes.comment}
-        >{comment.content}
-        </Paper>
-      })
-    }
-      <form onSubmit={handleSubmit} className={classes.flex}>
-        <TextField
-          id="outlined-multiline-static"
-          label="Comment"
-          multiline
-          rows={4}
-          placeholder="leave a comment"
-          variant="outlined"
-          value={comment}
-          onChange={(e) => setComment(e.target.value)}
-        />
-        <Button type='submit'>Post</Button>
-      </form>
+      <Box
+        display="flex"
+        flexDirection='column'
+        justifyContent="center"
+        alignItems='center'
+        width='50%'
+      >
+        <h1>Comments</h1>
+        {
+          commentsList
+            .filter(comment => comment.trackId === id)
+            .map(comment => {
+              return comment.author === userId
+                ?
+                <Paper
+                  elevation={2}
+                  className={classes.userComment}
+                  backg
+                >{comment.content}
+                </Paper>
+                :
+                <Paper
+                  elevation={2}
+                  className={classes.otherUserComment}
+                  backg
+                >{comment.content}
+                </Paper>
+            })
+        }
+        <form onSubmit={handleSubmit} className={classes.flex}>
+          <TextField
+            id="outlined-multiline-static"
+            label="Comment"
+            multiline
+            rows={4}
+            placeholder="leave a comment"
+            variant="outlined"
+            value={comment}
+            onChange={(e) => setComment(e.target.value)}
+          />
+          <Button type='submit'>Post</Button>
+        </form>
+      </Box>
     </Box>
   );
 }
