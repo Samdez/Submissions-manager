@@ -7,10 +7,11 @@ import CardContent from '@material-ui/core/CardContent';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import { Box } from '@material-ui/core';
-import { db } from '../../firebase/config';
+import { db, auth } from '../../firebase/config';
 import { useParams } from 'react-router-dom';
 import ThumbUpIcon from '@material-ui/icons/ThumbUp';
 import ThumbDownIcon from '@material-ui/icons/ThumbDown';
+import CheckCircleIcon from '@material-ui/icons/CheckCircle';
 import firebase from 'firebase/app';
 import Comments from './Comments';
 import Toast from '../User/Toast';
@@ -39,6 +40,8 @@ export default function Trackpage() {
   const { id } = useParams();
   const [open, setOpen] = useState(false);
   const [status, setStatus] = useState('');
+  const [vote, setVote] = useState([]);
+  const userId = auth.currentUser.uid;
 
   useEffect(() => {
     db.collection('tracks')
@@ -51,19 +54,37 @@ export default function Trackpage() {
       })
   }, []);
 
+  useEffect(() => {
+    db.collectionGroup('votes').where('trackId', '==', id)
+      .get()
+      .then(querySnapshot => {
+        querySnapshot.forEach(doc => {
+          setVote(doc.data())
+        })
+      })
+  }, [status])
+
   const handleApprove = () => {
     const docRef = db.collection('tracks').doc(id);
-    docRef.update({
-      status: 'approved'
+    docRef.collection('votes').doc(userId).set({
+      status: 'approved',
+      user: userId,
+      trackId: id
     })
     setStatus('approved')
     setOpen(true)
   }
 
+  useEffect(() => {
+    console.log(vote);
+  }, [vote])
+
   const handleRefuse = () => {
     const docRef = db.collection('tracks').doc(id);
-    docRef.update({
-      status: 'declined'
+    docRef.collection('votes').doc(userId).set({
+      status: 'declined',
+      user: userId,
+      trackId: id
     })
     setStatus('declined')
     setOpen(true)
@@ -97,17 +118,19 @@ export default function Trackpage() {
           <CardActions
             className={classes.buttons}
           >
-            <Button size="small" color="primary" onClick={handleApprove}>
+            <Button size="small" color='primary' onClick={handleApprove}>
               <ThumbUpIcon />
+              {vote.status === 'approved' && <CheckCircleIcon />}
             </Button>
-            <Button size="small" color="primary" onClick={handleRefuse}>
+            <Button size="small" color='primary' onClick={handleRefuse}>
               <ThumbDownIcon />
+              {vote.status === 'declined' && <CheckCircleIcon />}
             </Button>
           </CardActions>
         </Card>
       </Box>
       <Comments id={id} />
-      <Toast open={open} setOpen={setOpen} status={status}/>
+      <Toast open={open} setOpen={setOpen} status={status} />
     </>
   );
 }
