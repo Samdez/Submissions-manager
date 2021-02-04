@@ -82,7 +82,7 @@ export default function Trackpage() {
           <CardActionArea>
             <a href={track.link} target="_blank" rel='noreferrer' className={classes.link}>
               <CardContent>
-                <Typography gutterBottom variant="h1" component="h1">
+                <Typography gutterBottom variant="h3" component="h3">
                   {track.artist}
                 </Typography>
                 <Typography variant="h3" color="textSecondary" component="h3">
