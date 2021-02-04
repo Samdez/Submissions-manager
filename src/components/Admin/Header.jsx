@@ -22,10 +22,13 @@ const Header = () => {
   return (
     <AppBar position="static">
       <Toolbar>
-          <Button onClick={() => history.push('/admin/tracks')}>
+          <Button onClick={() => history.push('/admin')}>
             <AlbumSharpIcon />
           </Button>
-          <Button onClick={() => Auth.setIsLoggedIn(false)}>
+          <Button onClick={() => {
+            Auth.setIsLoggedIn(false)
+            history.push('/admin')
+            }}>
             Log out
           </Button>
           <Typography variant="h6" className={classes.nav} onClick={() => history.push('/admin/tracks')}>
